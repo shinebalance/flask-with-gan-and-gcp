@@ -1,3 +1,4 @@
 .pyc
 .jpg
 .env
+/GAE/quickstart/sample_flask/static
