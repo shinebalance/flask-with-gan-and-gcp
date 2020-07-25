@@ -1,24 +1,31 @@
 import os, sys
 from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory
+from tensorflow.python.keras.layers.preprocessing.image_preprocessing import RandomZoom
 from werkzeug.utils import secure_filename
 from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
 import tensorflow as tf
+# from dotenv import load_dotenv
+# from tensorflow.keras.preprocessing.image import array_to_img # test
 
 app = Flask(__name__)
 
+# load_dotenv()
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+H5_MODEl = 'generator_model_10000.h5'
 
 # disable eager mode
 tf.compat.v1.disable_eager_execution()
 
-model = load_model('obama_smalling_201908.h5')
+# model = load_model('obama_smalling_201908.h5')
+model = load_model(H5_MODEl)
 
 # adds
 graph = tf.compat.v1.get_default_graph()
 
+# Run Flask()
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -50,7 +57,7 @@ def predict():
             x = x / 255.
             x = x.reshape((1,) + x.shape)
             
-            global graph
+            global graph  # これグローバル変数か…
             with graph.as_default():
                 session = tf.compat.v1.keras.backend.get_session()
                 init = tf.compat.v1.global_variables_initializer()
@@ -69,9 +76,39 @@ def predict():
             return render_template('result.html', resultmsg=resultmsg, filepath=filepath)
     return render_template('predict.html')
 
+# 追加
+@app.route('/generate', methods=['GET', 'POST'])
+def generate():
+    """POSTされた場合のみgeneratorに対して乱数を入力、画像を生成する
+    """
+    if request.method == 'POST':
+        with graph.as_default():
+            # 重みの初期化
+            session = tf.compat.v1.keras.backend.get_session()
+            init = tf.compat.v1.global_variables_initializer()
+            session.run(init)
+            # run Prediction
+            latent_dim = 32
+            random_latent_vectors = np.random.normal(size=(10, latent_dim))
+            generated_images = model.predict(random_latent_vectors)
+
+        # 結果の変換
+        resultmsg = np.uint8(generated_images[0]*255)
+        # resultImg = array_to_img(generated_images[0] * 255., scale=False)
+        resultImg = Image.fromarray(resultmsg)
+        resultImg = resultImg.resize(
+            (int(resultImg.width*10), int(resultImg.height*10))
+            )
+        resultImg.save('./uploads/generated.jpeg')
+        return render_template(
+            'result.html', resultmsg=resultmsg, filepath='./uploads/generated.jpeg')
+    return render_template('generate.html')
+
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 if __name__ == '__main__':
     # app.run()
