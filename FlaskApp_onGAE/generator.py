@@ -1,11 +1,12 @@
-import os, sys
-from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory
-from tensorflow.python.keras.layers.preprocessing.image_preprocessing import RandomZoom
-from werkzeug.utils import secure_filename
+import os
+# from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+# from tensorflow.python.keras.layers.preprocessing.image_preprocessing import RandomZoom
+# from werkzeug.utils import secure_filename
 from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
-import tensorflow as tf
+# import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -20,8 +21,20 @@ model = load_model(H5_MODEl, compile=False)
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-def is_allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# 静的ファイル対策
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
 
 @app.route('/')
 def index():
@@ -44,55 +57,14 @@ def generate():
         resultImg = resultImg.resize(
             (int(resultImg.width*10), int(resultImg.height*10))
             )
-        filepath = './uploads/generated.jpg'
+        filepath = './static/uploads/generated.jpg'
         resultImg.save(filepath)
         return render_template(
             'result.html', resultmsg=resultmsg, filepath=filepath)
     return render_template('generate.html')
 
-'''
-@app.route('/predict', methods=['GET', 'POST'])
-def predict():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file.')
-            return redirect(url_for('predict'))
-        file = request.files['file']
-        if file.filename == '':
-            flash('No file.')
-            return redirect(url_for('predict'))
-        if file and is_allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            
-            img = Image.open(filepath).convert('RGB')
-            img = img.resize((150, 150))
-            x = np.array(img, dtype=np.float32)
-            x = x / 255.
-            x = x.reshape((1,) + x.shape)
-            
-            global graph  # これグローバル変数か…
-            with graph.as_default():
-                session = tf.compat.v1.keras.backend.get_session()
-                init = tf.compat.v1.global_variables_initializer()
-                session.run(init)
-                # prediction
-                pred = model.predict(x, batch_size=1, verbose=0)
-                score = pred[0][0]
-                if(score >= 0.5):
-                    person = 'Smalling'
-                else:
-                    person = 'Obama'
-                    score = 1 - score
 
-            resultmsg = '[{}] {:.4%} Sure.'.format(person, score)
-            
-            return render_template('result.html', resultmsg=resultmsg, filepath=filepath)
-    return render_template('predict.html')
-'''
-
-@app.route('/uploads/<filename>')
+@app.route('/static/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 

@@ -7,4 +7,6 @@
 {% block content %}
   <p>{{resultmsg}}</p>
   <img src="{{filepath}}">
+  <img src="{url_for('static', filename='{{filepath}}')}" class="img-fluid" alt="Responsive image">
+  <img src="{{url_for('static', filename='uploads/generated.jpg')}}" class="img-fluid" alt="Responsive image">
 {% endblock %}
