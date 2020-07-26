@@ -43,7 +43,7 @@ def index():
     return redirect(url_for('generate'))
 
 
-@app.route('/tmp/<filename>')
+@app.route('./tmp/<filename>')
 def uploaded_file(filename):
     return send_from_directory('/tmp', filename)
 
@@ -66,7 +66,7 @@ def generate():
             )
         # 保存とタイムスタンプの取得(静的ファイルのキャッシュ対策)
         filepath = 'generated.jpg'
-        savePath = '/tmp/'+filepath  # GAEデプロイ時は.を外す
+        savePath = './tmp/'+filepath  # GAEデプロイ時は.を外す
         resultImg.save(savePath)
         timeStamps = int(os.stat(savePath).st_mtime)
         # レンダリング時はドット(.)が不要

@@ -23,3 +23,6 @@ Pipfile.lock
 
 # h5 model
 cifar-10*.h5
+
+# generated image
+/tmp/generated.jpg
