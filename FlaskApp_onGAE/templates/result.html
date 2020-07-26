@@ -6,8 +6,7 @@
 
 {% block content %}
   <p>{{resultmsg}}</p>
-  <img src="{{url_for('static', filename='generated.jpg')}}"
-   class="img-fluid" alt="Responsive image">
+   <img src="{{filepath}}">
   <h2>regenerate</h2>
   <form method=post enctype=multipart/form-data>
     <input type=submit value=generate>

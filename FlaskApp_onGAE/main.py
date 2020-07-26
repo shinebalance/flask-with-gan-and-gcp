@@ -18,7 +18,7 @@ model = load_model(H5_MODEl, compile=False)
 # Run Flask()
 app = Flask(__name__)
 
-# @app.context_processor:テンプレーt−共通で利用したい関数を置く
+# @app.context_processor:テンプレート共通で利用したい関数を置く
 # 静的ファイル対策(static)
 @app.context_processor
 def override_url_for():
@@ -29,19 +29,13 @@ def override_url_for():
 def dated_url_for(endpoint, **values):
     """endpoint==staticのときのみファイルクエリにタイムスタンプを付加する
     """
-    if endpoint == 'static' or endpoint == 'tmp':
+    if endpoint == 'static':
         filename = values.get('filename', None)
         if filename:
             file_path = os.path.join(app.root_path,
                                      endpoint, filename)
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
-
-# 静的ファイル対策(temp)
-# def override_url_for():
-#     """url_for()をdated_url_forでオーバーライド
-#     """
-#     return dict(url_for=dated_url_for)
 
 
 @app.route('/')
@@ -70,19 +64,16 @@ def generate():
         resultImg = resultImg.resize(
             (int(resultImg.width*10), int(resultImg.height*10))
             )
-        # 保存
+        # 保存とタイムスタンプの取得(静的ファイルのキャッシュ対策)
         filepath = 'generated.jpg'
-        resultImg.save('.'+url_for('static', filename=filepath))
-        # 実験
         savePath = './tmp/'+filepath
-        loadPath = '/tmp/'+filepath
         resultImg.save(savePath)
         timeStamps = int(os.stat(savePath).st_mtime)
-        filepath = f'{loadPath}?q={timeStamps}'
-        # レンダリング
+        # レンダリング時はドット(.)が不要
+        filepath = f'/tmp/{filepath}?q={timeStamps}'
+        # templateにわたす
         return render_template(
-            'result.html', resultmsg=timeStamps, filepath=filepath)
-            # 'result.html', resultmsg=H5_MODEl, filepath=filepath)
+            'result.html', resultmsg=H5_MODEl, filepath=filepath)
     return render_template('generate.html')
 
 
