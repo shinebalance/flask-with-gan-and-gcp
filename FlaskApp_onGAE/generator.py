@@ -1,12 +1,8 @@
 import os
-# from flask import Flask, flash, request, redirect, url_for, render_template, send_from_directory
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory
-# from tensorflow.python.keras.layers.preprocessing.image_preprocessing import RandomZoom
-# from werkzeug.utils import secure_filename
 from tensorflow.keras.models import load_model
 import numpy as np
 from PIL import Image
-# import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -19,14 +15,19 @@ model = load_model(H5_MODEl, compile=False)
 
 # Run Flask()
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # 静的ファイル対策
 @app.context_processor
 def override_url_for():
+    """url_for()をdated_url_forでオーバーライド
+    """
     return dict(url_for=dated_url_for)
 
+
 def dated_url_for(endpoint, **values):
+    """endpoint==staticのときのみファイルクエリにタイムスタンプを付加する
+    """
     if endpoint == 'static':
         filename = values.get('filename', None)
         if filename:
@@ -57,8 +58,10 @@ def generate():
         resultImg = resultImg.resize(
             (int(resultImg.width*10), int(resultImg.height*10))
             )
-        filepath = './static/uploads/generated.jpg'
-        resultImg.save(filepath)
+        # 保存
+        filepath = 'generated.jpg'
+        resultImg.save('.'+url_for('static', filename=filepath))
+        # レンダリング
         return render_template(
             'result.html', resultmsg=resultmsg, filepath=filepath)
     return render_template('generate.html')

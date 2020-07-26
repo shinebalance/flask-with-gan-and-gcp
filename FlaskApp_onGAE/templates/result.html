@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}I have predicted:{% endblock %}</h1>
+  <h1>{% block title %}generated.{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
   <p>{{resultmsg}}</p>
-  <img src="{{filepath}}">
-  <img src="{url_for('static', filename='{{filepath}}')}" class="img-fluid" alt="Responsive image">
-  <img src="{{url_for('static', filename='uploads/generated.jpg')}}" class="img-fluid" alt="Responsive image">
+  <img src="{{url_for('static', filename='generated.jpg')}}"
+   class="img-fluid" alt="Responsive image">
 {% endblock %}
