@@ -5,9 +5,9 @@
 * 最終的にGoogle App Engine上にDeployして動かす
 
 ## Must to do
-* [ ] Generator(CIFAR-10)で生成したModelを保存して推論で動かす
+* [x] Generator(CIFAR-10)で生成したModelを保存して推論で動かす
 * [ ] Generator(my own)で生成したModelを保存して推論で動かす
-* [ ] 推論処理をflaskに組み込む
+* [x] 推論処理をflaskに組み込む
 * [ ] flaskをGAEにDeployする
 * [ ] 推論処理をtflite化する
 

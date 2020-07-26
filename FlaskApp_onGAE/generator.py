@@ -6,16 +6,16 @@ from PIL import Image
 
 app = Flask(__name__)
 
-# load_dotenv()
-UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-H5_MODEl = 'generator_model_10000.h5'
+# h5モデルファイルの読み込み
+# H5_MODEl = 'cifar-10_airplane_model_5000.h5'
+# H5_MODEl = 'cifar-10_airplane_model_10000.h5'
+# H5_MODEl = 'cifar-10_airplane_model_20000.h5'
+H5_MODEl = 'cifar-10_airplane_model_30000.h5'
 
 model = load_model(H5_MODEl, compile=False)
 
 # Run Flask()
 app = Flask(__name__)
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # 静的ファイル対策
 @app.context_processor
@@ -49,7 +49,7 @@ def generate():
     if request.method == 'POST':
         # load model and run
         latent_dim = 32
-        random_latent_vectors = np.random.normal(size=(10, latent_dim))
+        random_latent_vectors = np.random.normal(size=(1, latent_dim))
         generated_images = model.predict(random_latent_vectors)
 
         # 結果の変換
@@ -63,13 +63,8 @@ def generate():
         resultImg.save('.'+url_for('static', filename=filepath))
         # レンダリング
         return render_template(
-            'result.html', resultmsg=resultmsg, filepath=filepath)
+            'result.html', resultmsg=H5_MODEl, filepath=filepath)
     return render_template('generate.html')
-
-
-@app.route('/static/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 if __name__ == '__main__':

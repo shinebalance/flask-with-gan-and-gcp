@@ -1,4 +1,9 @@
-# My prototyping apps (for generator)
+# Prototyping DCGAN and 
+* Prototyping 
+
+
+## How to run
+My prototyping apps (for generator)
 
 ## requirements
 * python 3.7
@@ -8,8 +13,8 @@
 
 ## TO DO
 * [x] Data preparation with icrawler
-* [ ] Training with GAN (as simpy: DCGAN)
-  * [ ] modify network size
+* [x] Training with GAN (as simpy: DCGAN)
+  * [x] modify network size
   * [ ] save a best .pb and copy to GCS
 * [ ] Run Flask on GAE
   * [ ] make hello-world app

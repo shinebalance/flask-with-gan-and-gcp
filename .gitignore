@@ -1,4 +1,5 @@
 .pyc
 .jpg
 .env
+*.h5
 /FlaskApp_onGAE/_flask_samples
