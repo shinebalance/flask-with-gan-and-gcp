@@ -1,8 +1,34 @@
-# FlaskAp on GAE
+# run Generator(from DCGAN) on FlaskApp
+* DCGANのNotebookから学習済モデルをDLし、本Flaskアプリに読み込ませることで、Generatorの生成結果を手軽にブラウザ上で確認することが出来る。
+* FlaskアプリはGoogle App Engineへのデプロイまで検証済。
 
-## Want to do
-* GANで生成したGeneratorのモデルを読み込み、Web画面上で生成して表示する
-* 最終的にGoogle App Engine上にDeployして動かす
+
+## How to run
+### on Local
+```
+pip3 install -r requirements.txt
+python3 main.py
+```
+### with pipenv
+```
+python3 -m pipenv --python 3.7 install -r requirements.txt
+python3 -m pipenv run python main.py
+# with gunicorn
+python3 -m pipenv shell
+gunicorn -b :$8080 main:app
+```
+### on Google AppEngine
+```
+gcloud app deploy app.yaml
+```
+
+
+
+## motivation
+* 苦手なWebフレームワークを自分のニーズで動かす
+* サーバレス系のPaaSを動かしてみたい
+* GANのGeneratorの活用方法を考える
+
 
 ## Must to do
 * [x] Generator(CIFAR-10)で生成したModelを保存して推論で動かす
@@ -11,16 +37,9 @@
 * [ ] flaskをGAEにDeployする
 * [ ] 推論処理をtflite化する
 
-## Work notes
-* [x] 手頃なサンプルを集めてきて動かす
- * '_flask_samples'にて、GAEクイックスタートとFlask自体のサンプル、オバマ判定サンプルを動かした
- * オバマ判定サンプルをたたきに自分のアプリを作ることにする
+### if possible
 
 
-## commands memo
-```
-python3 -m pipenv --python 3.7 install -r requirements.txt
-python3 -m pipenv run python main.py
-```
 
-# EOF
+
+## EOF
