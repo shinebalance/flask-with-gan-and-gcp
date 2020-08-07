@@ -1,14 +1,21 @@
-# Prototyping DCGAN and 
-* Prototyping 
+# Flask with GAN
+* my prototyping flask app for running tiny generator from GAN.
+
+## components
+* google colab notebook (DCGAN) for learning task.
+* flask app for running generator from notebook.
+* (optional) deploy flask app to Google App Engine.
+
+### requirements
+* Google Colab Account
+* python 3.7 + any
+* Google Cloud Account
 
 
 ## How to run
-My prototyping apps (for generator)
-
-## requirements
-* python 3.7
-* Google Colab
-* Google Cloud
+* google colab notebook (DCGAN) for learning task.
+* flask app for running generator from notebook.
+* (optional) deploy flask app to Google App Engine.
 
 
 ## TO DO
