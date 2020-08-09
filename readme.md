@@ -13,9 +13,11 @@
 
 
 ## How to run
-* google colab notebook (DCGAN) for learning task.
-* flask app for running generator from notebook.
-* (optional) deploy flask app to Google App Engine.
+* generate hdf5 file from google colab notebook (DCGAN).
+* put hdf file and run flask app on local
+  * see [flask-app directory](flask-app)
+* (optional)deploy the app to your any Google App Engine 
+  * see [flask-app directory](flask-app)
 
 
 ## TO DO

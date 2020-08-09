@@ -1,7 +1,6 @@
-# run Generator(from DCGAN) on FlaskApp
-* DCGANのNotebookから学習済モデルをDLし、本Flaskアプリに読み込ませることで、Generatorの生成結果を手軽にブラウザ上で確認することが出来る。
-* FlaskアプリはGoogle App Engineへのデプロイまで検証済。
-
+# prototyping flaskk app
+* load hdf5 file from [notebook](notebook)
+* run Generator(DCGAN) on this flask app
 
 ## How to run
 ### on Local
@@ -21,14 +20,6 @@ gunicorn -b :$8080 main:app
 ```
 gcloud app deploy app.yaml
 ```
-
-
-
-## motivation
-* 苦手なWebフレームワークを自分のニーズで動かす
-* サーバレス系のPaaSを動かしてみたい
-* GANのGeneratorの活用方法を考える
-
 
 ## Must to do
 * [x] Generator(CIFAR-10)で生成したModelを保存して推論で動かす
